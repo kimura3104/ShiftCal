@@ -12,11 +12,14 @@
 
 ActiveRecord::Schema.define(version: 2023_04_02_104233) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "employees", force: :cascade do |t|
     t.string "name"
     t.integer "password"
     t.integer "wage"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_employees_on_user_id"
@@ -40,7 +43,7 @@ ActiveRecord::Schema.define(version: 2023_04_02_104233) do
     t.float "night_rate"
     t.time "night_start"
     t.time "night_end"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_wage_settings_on_user_id"

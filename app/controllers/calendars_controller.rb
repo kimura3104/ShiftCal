@@ -77,7 +77,7 @@ class CalendarsController < ApplicationController
     client_id = Google::Auth::ClientId.new(ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'])
     token_store = Google::Auth::Stores::RedisTokenStore.new(redis: Redis.new(url: Rails.application.config.redis_url))
     #token_store = Google::Auth::TokenStore.new
-    authorizer = Google::Auth::UserAuthorizer.new(client_id, Google::Apis::CalendarV3::AUTH_CALENDAR, token_store, "http://localhost:3000/auth/google_oauth2/callback")
+    authorizer = Google::Auth::UserAuthorizer.new(client_id, Google::Apis::CalendarV3::AUTH_CALENDAR, token_store, ENV['GOOGLE_CALLBACK_URL'])
     #user_id = current_user.id
     #credentials = authorizer.get_credentials(user_id.to_s)
     credentials = authorizer.get_credentials(current_user.email)
