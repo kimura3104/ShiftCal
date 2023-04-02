@@ -13,3 +13,22 @@
  *= require_tree .
  *= require_self
  */
+ h1 {
+    text-align: center;
+    padding: 10px;
+    border-bottom: solid;
+    border-bottom-color: blue;
+}
+
+.main-page {
+    margin: 0 80px;
+}
+
+.main-content {
+    padding: 20px 40px;
+    background-color: white;
+}
+
+.main-content input {
+    margin-bottom: 10px;
+}

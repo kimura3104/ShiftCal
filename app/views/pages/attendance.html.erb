@@ -1,0 +1,7 @@
+<h1>打刻ページ</h1>
+
+<%= form_tag(attendance_path, method: :post) do %>
+  <%= select_tag :employee_id, options_for_select(@employees.map { |employee| [employee.name, employee.id] }) %>
+  <%= submit_tag "出勤" %>
+  <%= submit_tag "退勤" %>
+<% end %>

@@ -1,0 +1,10 @@
+<h1>ダッシュボード</h1>
+
+<div class="main-page">
+  <div class="main-content">
+    <%= link_to '打刻する', attendance_path %>
+    <% #if current_user.admin? %>
+    <%= link_to '管理者用ページ', admin_path %>
+    <% #end %>
+  </div>
+</div>
