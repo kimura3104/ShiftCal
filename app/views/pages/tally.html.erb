@@ -1,0 +1,36 @@
+<h1>勤怠集計ページ</h1>
+
+<%= form_tag(admin_tally_path, method: :get) do %>
+  <%= select_tag(:employee_id, options_from_collection_for_select(Employee.all, :id, :name), include_blank: true) %>
+  <%= submit_tag("検索") %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>従業員名</th>
+      <th>出勤日数</th>
+      <th>勤務時間（h）</th>
+      <th>賃金（円）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @employee %>
+      <tr>
+        <td><%= @employee.name %></td>
+        <td><%= @attendance_counts[@employee.id] || 0 %></td>
+        <td><%= @attendance_hours[@employee.id] || 0 %></td>
+        <td><%= @attendance_wage[@employee.id] || 0 %></td>
+      </tr>
+    <% else %>
+      <% Employee.all.each do |employee| %>
+        <tr>
+          <td><%= employee.name %></td>
+          <td><%= @attendance_counts[employee.id] || 0 %></td>
+          <td><%= @attendance_hours[employee.id] || 0 %></td>
+          <td><%= @attendance_wage[employee.id] || 0 %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
