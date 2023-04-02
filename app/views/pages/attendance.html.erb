@@ -2,6 +2,9 @@
 
 <%= form_tag(attendance_path, method: :post) do %>
   <%= select_tag :employee_id, options_for_select(@employees.map { |employee| [employee.name, employee.id] }) %>
-  <%= submit_tag "出勤" %>
+  </p>
+  <%= submit_tag "出勤", class: "btn btn-primary btn-lg" %>
   <%= submit_tag "退勤" %>
 <% end %>
+</p>
+<%= link_to 'Back', root_path %>

@@ -12,9 +12,9 @@ class PagesController < CalendarsController
 
     #render controller: 'calendars', action: 'list_events'
     @events_list = list_events
-    logger.debug(@events_list)
-    logger.debug(@events_list.items.map{|e| e.summary})
-    logger.debug(@events_list.items.map{|e| (e.end.date_time - e.start.date_time).to_f * 24})
+    #logger.debug(@events_list)
+    #logger.debug(@events_list.items.map{|e| e.summary})
+    #logger.debug(@events_list.items.map{|e| (e.end.date_time - e.start.date_time).to_f * 24})
   end
 
   def tally

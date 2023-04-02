@@ -41,13 +41,37 @@ class CalendarsController < ApplicationController
   def record
     #calendar = Google::Apis::CalendarV3::Calendar.new(summary: params[:name])
     #service.insert_calendar(calendar)
+    @events_list = list_events
     start_time = Time.zone.now
     start_time_iso8601 = start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
-    logger.debug(start_time_iso8601)
+    today = start_time.to_date
+    logger.debug(today)
     end_time = start_time + 1.hours
     end_time_iso8601 = end_time.strftime('%Y-%m-%dT%H:%M:%SZ')
     summary = Employee.find(params[:employee_id]).name
-    insert_event(start_time_iso8601, end_time_iso8601, summary)
+    #logger.debug(@events_list.items.select {|e| e.summary == summary})
+    #logger.debug(@events_list.items.select {|e| e.summary == summary}.map{|e| e.start.date_time})
+    #logger.debug(@events_list.items.select {|e| e.summary == summary}.map{|e| e.start.date_time.to_date})
+    #logger.debug(@events_list.items.select {|e| e.summary == summary}.map{|e| e.start.date_time.to_date}.include?(today))
+    event = @events_list.items.select{|e| e.summary == summary}.find{|e| e.start.date_time.to_date == today}
+    logger.debug(event)
+      #if @events_list != nil && @events_list.items.map{|e| e.summary}.include?(summary)
+    if @events_list != nil && event != nil
+      if params[:commit] == '出勤'
+        #logger.debug(event.start.date_time)
+        event.start.date_time = start_time_iso8601
+        #logger.debug(event.start.date_time)
+        update_event(event)
+      elsif params[:commit] == '退勤'
+        #logger.debug(event.end.date_time)
+        event.end.date_time = start_time_iso8601
+        #logger.debug(event.end.date_time)
+        update_event(event)
+      end
+    else
+      insert_event(start_time_iso8601, end_time_iso8601, summary) if params[:commit] == '出勤'
+      #logger.debug("insert") if params[:commit] == '出勤'
+    end
   end
 
   def insert_event(start_time, end_time, summary)
@@ -69,6 +93,14 @@ class CalendarsController < ApplicationController
         },
     })
     result = service.insert_event(calendar_id, event)
+  end
+
+  def update_event(event)
+    service = Google::Apis::CalendarV3::CalendarService.new
+    service.authorization = authorization
+    return nil if service.authorization == nil
+    calendar_id = current_user.calendar_id
+    result = service.update_event(calendar_id, event.id, event)
   end
 
   private
