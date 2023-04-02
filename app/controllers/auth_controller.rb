@@ -1,3 +1,5 @@
+require 'googleauth/stores/redis_token_store'
+
 class AuthController < ApplicationController
   def google_oauth2_callback
     client_id = Google::Auth::ClientId.new(ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'])

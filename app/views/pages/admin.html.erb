@@ -1,5 +1,12 @@
 <h1>管理者ページ</h1>
-<ul>
-  <%= link_to '従業員一覧', employees_path %>
-  <%= link_to '賃金設定', wage_settings_path %>
-</ul>
+
+<div class="main-page">
+  <div class="main-content">
+    <ul>
+      <%= link_to '従業員一覧', employees_path %>
+      <%= link_to '集計', '/admin/tally' %>
+    </ul>
+  </div>
+  </p>
+  <%= link_to 'Back', root_path %>
+</div>

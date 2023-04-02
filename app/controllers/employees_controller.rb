@@ -14,6 +14,8 @@ class EmployeesController < ApplicationController
   # GET /employees/new
   def new
     @employee = Employee.new
+    @employee.wage = 800
+    @employee.user_id = current_user.id
   end
 
   # GET /employees/1/edit
@@ -26,7 +28,7 @@ class EmployeesController < ApplicationController
 
     respond_to do |format|
       if @employee.save
-        format.html { redirect_to employee_url(@employee), notice: "Employee was successfully created." }
+        format.html { redirect_to employees_path, notice: "Employee was successfully created." }
         format.json { render :show, status: :created, location: @employee }
       else
         format.html { render :new, status: :unprocessable_entity }
