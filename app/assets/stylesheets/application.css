@@ -21,7 +21,7 @@
 }
 
 .main-page {
-    margin: 0 80px;
+    margin: 0 200px;
 }
 
 .main-content {
@@ -31,4 +31,29 @@
 
 .main-content input {
     margin-bottom: 10px;
+}
+
+.btn-in-lg {
+    background-image: linear-gradient(0deg, #7fc5ee, #c3e5f8);
+    border-radius: 0.5em;
+    width: 300px;
+    height: 300px;
+    font-size: 400%;
+    margin: 20px;
+}
+
+.btn-out-lg {
+    background-image: linear-gradient(0deg, #e0291c, #fcc4b5);
+    border-radius: 0.5em;
+    width: 300px;
+    height: 300px;
+    font-size: 400%;
+    margin: 20px;
+}
+
+.pulldown-lg {
+    margin-bottom: 20px;
+    width: 640px;
+    height: 80px;
+    font-size: 250%;
 }

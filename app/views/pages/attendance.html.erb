@@ -1,10 +1,14 @@
 <h1>打刻ページ</h1>
 
+<div class="main-page">
+  <div class="main-content" align="center">
 <%= form_tag(attendance_path, method: :post) do %>
-  <%= select_tag :employee_id, options_for_select(@employees.map { |employee| [employee.name, employee.id] }) %>
+  <%= select_tag :employee_id, options_for_select(@employees.map { |employee| [employee.name, employee.id] }), class: "pulldown-lg" %>
   </p>
-  <%= submit_tag "出勤", class: "btn btn-primary btn-lg" %>
-  <%= submit_tag "退勤" %>
+  <%= submit_tag "出勤", class: "btn-in-lg" %>
+  <%= submit_tag "退勤", class: "btn-out-lg" %>
 <% end %>
-</p>
-<%= link_to 'Back', root_path %>
+  </div>
+  </p>
+  <%= link_to 'Back', root_path %>
+</div>

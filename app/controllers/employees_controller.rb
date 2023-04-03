@@ -16,7 +16,6 @@ class EmployeesController < ApplicationController
   def new
     @employee = Employee.new
     @employee.wage = 800
-    @employee.user_id = current_user.id
   end
 
   # GET /employees/1/edit
@@ -26,6 +25,7 @@ class EmployeesController < ApplicationController
   # POST /employees or /employees.json
   def create
     @employee = Employee.new(employee_params)
+    @employee.update(user_id: current_user.id)
 
     respond_to do |format|
       if @employee.save

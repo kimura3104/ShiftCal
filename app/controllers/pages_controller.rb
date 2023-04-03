@@ -1,5 +1,14 @@
 class PagesController < CalendarsController
   before_action :authenticate_user!, only: [:dashboard, :admin, :attendance]
+  before_action :basic, only: [:admin]
+
+  
+
+  def basic
+    authenticate_or_request_with_http_basic do |name, password|
+      name == ENV['BASIC_AUTH_NAME'] && password == ENV['BASIC_AUTH_PASSWORD']
+    end
+  end
 
   def dashboard
   end
@@ -22,6 +31,8 @@ class PagesController < CalendarsController
     #@employees = Employee.all
     @employees = current_user.employees
     @month = params[:month] || Date.current.month
+    logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    logger.debug(@month)
     @events_list = list_events
 
     @attendance_counts = {}

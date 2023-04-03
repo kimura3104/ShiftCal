@@ -17,7 +17,7 @@ class CalendarsController < ApplicationController
     end
   end
 
-  def list_events
+  def list_events(time_min = nil, time_max = nil)
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = authorization
     return nil if service.authorization == nil
@@ -26,7 +26,7 @@ class CalendarsController < ApplicationController
       create_calendar
     else
       begin
-        result = service.list_events(calendar_id)
+        result = service.list_events(calendar_id, time_min: time_min, time_max: time_max, single_events: true)
       rescue
         result = service.list_calendar_lists
         logger.debug(result.items.map{|e| e.id})
