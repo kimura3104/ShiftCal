@@ -8,7 +8,8 @@ class PagesController < CalendarsController
   end
 
   def attendance
-    @employees = Employee.all
+    #@employees = Employee.all
+    @employees = current_user.employees
 
     #render controller: 'calendars', action: 'list_events'
     @events_list = list_events
@@ -18,18 +19,32 @@ class PagesController < CalendarsController
   end
 
   def tally
-    @employees = Employee.all
-    @events_list = list_events.items
+    #@employees = Employee.all
+    @employees = current_user.employees
+    @month = params[:month] || Date.current.month
+    @events_list = list_events
 
     @attendance_counts = {}
     @attendance_hours = {}
     @attendance_wage = {}
+    return nil if @events_list == nil
     @employees.each do |employee|
-      extracted_events = @events_list.select {|e| e.summary == employee.name}
+      extracted_events = @events_list.items.select {|e| e.summary == employee.name}
       @attendance_counts[employee.id] = extracted_events.length
       @attendance_hours[employee.id] = extracted_events
       .map{|e| (e.end.date_time - e.start.date_time).to_f * 24}.sum
       @attendance_wage[employee.id] = (@attendance_hours[employee.id] * employee.wage).to_i
+    end
+
+    @attendance_list = []
+    @events_list.items.each do |event|
+      event_record = {
+        "date" => event.start.date_time.to_date,
+        "enployee" => event.summary,
+        "hours" => (event.end.date_time - event.start.date_time).to_f * 24
+        #"wage" => (event.end.date_time - event.start.date_time).to_f * 24
+      }
+      @attendance_list << event_record
     end
     
 =begin

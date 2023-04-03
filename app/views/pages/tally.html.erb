@@ -3,10 +3,6 @@
 
 <div class="main-page">
   <div class="main-content">
-<%= form_tag(admin_tally_path, method: :get) do %>
-  <%= select_tag(:employee_id, options_from_collection_for_select(Employee.all, :id, :name), include_blank: true) %>
-  <%= submit_tag("検索") %>
-<% end %>
 
 <table>
   <thead>
@@ -26,7 +22,7 @@
         <td><%= @attendance_wage[@employee.id] || 0 %></td>
       </tr>
     <% else %>
-      <% Employee.all.each do |employee| %>
+      <% current_user.employees.each do |employee| %>
         <tr>
           <td><%= employee.name %></td>
           <td><%= @attendance_counts[employee.id] || 0 %></td>
@@ -34,6 +30,25 @@
           <td><%= @attendance_wage[employee.id] || 0 %></td>
         </tr>
       <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>日付</th>
+      <th>従業員名</th>
+      <th>勤務時間（h）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @attendance_list.each do |record| %>
+      <tr>
+        <td><%= record["date"] %></td>
+        <td><%= record["enployee"] || 0 %></td>
+        <td><%= record["hours"] || 0 %></td>
+      </tr>
     <% end %>
   </tbody>
 </table>
