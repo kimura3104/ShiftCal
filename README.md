@@ -1,24 +1,15 @@
-# README
+# ShiftCal
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+小規模の飲食店に向けた従業員の勤怠管理を行うためのWebアプリケーションです．
+Googleカレンダーと連携しており，カレンダーに登録された予定によって従業員の勤怠情報を管理・集計します．
+また，従業員は出勤・退勤時に打刻を行うことができ，勤怠情報をGoogleカレンダーに自動で登録・更新できます．
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+# Usage
+1. https://shiftcal.onrender.com にアクセスします．
+2. ログイン画面が表示されるので，ログインします．
+3. Google に認証を聞かれるので許可します．
+4. 認証が終われば「ShiftCal」というカレンダーが自動で追加されます．
+   * このカレンダー上の予定が勤怠情報となり，従業員の名前を予定名とした予定を勤怠情報として管理されます．
+5. 打刻ページでは，従業員を選択して出勤/退勤の打刻ができます．
+   * 選択された従業員のシフトの予定が当日に入っていれば，打刻した時刻で予定の開始時刻/終了時刻が上書きされます．
+   * 選択された従業員のシフトの予定が当日に入っていなければ，新たに予定が作成されます．
