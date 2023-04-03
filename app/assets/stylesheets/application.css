@@ -57,3 +57,17 @@
     height: 80px;
     font-size: 250%;
 }
+
+table {
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+table th {
+    border: solid 1px;
+    background-color: lightpink;
+}
+
+table td {
+    border: solid 1px;
+}

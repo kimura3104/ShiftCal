@@ -9,9 +9,9 @@
 <table>
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Wage</th>
-      <th colspan="3"></th>
+      <th>従業員名</th>
+      <th>時給</th>
+      <th colspan="2">操作</th>
     </tr>
   </thead>
 
@@ -19,9 +19,8 @@
     <% @employees.each do |employee| %>
       <tr>
         <td><%= employee.name %></td>
-        <td><%= employee.wage %></td>
-        <td><%= link_to 'Edit', edit_employee_path(employee) %></td>
-        <td><%= link_to 'Destroy', employee, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= employee.wage %>円</td>
+        <td colspan="2"><%= link_to '編集', edit_employee_path(employee) %> <%= link_to '削除', employee, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

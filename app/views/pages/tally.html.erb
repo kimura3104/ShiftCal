@@ -3,6 +3,24 @@
 
 <div class="main-page">
   <div class="main-content">
+  <%= form_with url: '/admin/tally', method: :get, local: true do |f| %>
+  <label>月を選択</label>
+  <%= raw sprintf(f.date_select(
+    :date,
+    start_year: (Time.now.year - 1),
+    end_year: (Time.now.year + 1),
+    default: DateTime.new(@year.to_i, @month.to_i, 1) || Time.now,
+    discard_day: true,
+    date_separator:'%s'
+    ),"年") + "月"
+     %>
+  <%= f.submit '絞り込み', class: 'btn btn-primary' %>
+<% end %>
+<label>従業員を選択</label>
+<%= form_tag(admin_tally_path, method: :get) do %>
+  <%= select_tag(:employee_id, options_from_collection_for_select(Employee.all, :id, :name), include_blank: true) %>
+  <%= submit_tag("絞り込み") %>
+<% end %>
 
 <table>
   <thead>

@@ -1,12 +1,14 @@
 class PagesController < CalendarsController
   before_action :authenticate_user!, only: [:dashboard, :admin, :attendance]
   before_action :basic, only: [:admin]
+  include ActiveRecord::AttributeAssignment
 
   
 
   def basic
     authenticate_or_request_with_http_basic do |name, password|
       name == ENV['BASIC_AUTH_NAME'] && password == ENV['BASIC_AUTH_PASSWORD']
+      #name == current_user.email && password == current_user.password
     end
   end
 
@@ -30,17 +32,28 @@ class PagesController < CalendarsController
   def tally
     #@employees = Employee.all
     @employees = current_user.employees
-    @month = params[:month] || Date.current.month
-    logger.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    logger.debug(@month)
-    @events_list = list_events
+    @year = params["date(1i)"] || Date.current.year
+    @month = params["date(2i)"] || Date.current.month
+    params.permit(:date, :commit)
+    puts '**+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
+    puts @year
+    puts @month
+    selected_date = Date.new(@year.to_i, @month.to_i, 1)
+    @events_list = list_events(selected_date.beginning_of_month.rfc3339, selected_date.end_of_month.rfc3339)
+
+    return nil if @events_list == nil
+    @events_list = @events_list.items
+    if params[:employee_id] != nil
+      employee_name = Employee.find(params[:employee_id]).name
+      @events_list = @events_list.select {|e| e.summary == employee_name}
+    end
 
     @attendance_counts = {}
     @attendance_hours = {}
     @attendance_wage = {}
-    return nil if @events_list == nil
+    
     @employees.each do |employee|
-      extracted_events = @events_list.items.select {|e| e.summary == employee.name}
+      extracted_events = @events_list.select {|e| e.summary == employee.name}
       @attendance_counts[employee.id] = extracted_events.length
       @attendance_hours[employee.id] = extracted_events
       .map{|e| (e.end.date_time - e.start.date_time).to_f * 24}.sum
@@ -48,7 +61,7 @@ class PagesController < CalendarsController
     end
 
     @attendance_list = []
-    @events_list.items.each do |event|
+    @events_list.each do |event|
       event_record = {
         "date" => event.start.date_time.to_date,
         "enployee" => event.summary,
