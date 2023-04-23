@@ -2,6 +2,7 @@ require 'googleauth/stores/redis_token_store'
 
 class CalendarsController < ApplicationController
   def create_calendar
+    return if current_user.calendar_id != nil
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = authorization
     calendar = Google::Apis::CalendarV3::Calendar.new(summary: "ShiftCal")
@@ -41,7 +42,7 @@ class CalendarsController < ApplicationController
   def record
     #calendar = Google::Apis::CalendarV3::Calendar.new(summary: params[:name])
     #service.insert_calendar(calendar)
-    @events_list = list_events
+    @events_list = list_events(Time.zone.now.beginning_of_month.rfc3339, Time.zone.now.end_of_month.rfc3339)
     start_time = Time.zone.now
     start_time_iso8601 = start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
     today = start_time.to_date
@@ -53,7 +54,7 @@ class CalendarsController < ApplicationController
     #logger.debug(@events_list.items.select {|e| e.summary == summary}.map{|e| e.start.date_time})
     #logger.debug(@events_list.items.select {|e| e.summary == summary}.map{|e| e.start.date_time.to_date})
     #logger.debug(@events_list.items.select {|e| e.summary == summary}.map{|e| e.start.date_time.to_date}.include?(today))
-    event = @events_list.items.select{|e| e.summary == summary}.find{|e| e.start.date_time.to_date == today}
+    event = @events_list.items.select{|e| e.summary == summary && e.start.date_time != nil}.find{|e| e.start.date_time.to_date == today}
     logger.debug(event)
       #if @events_list != nil && @events_list.items.map{|e| e.summary}.include?(summary)
     if @events_list != nil && event != nil

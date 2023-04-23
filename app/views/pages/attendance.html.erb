@@ -5,8 +5,8 @@
 <%= form_tag(attendance_path, method: :post) do %>
   <%= select_tag :employee_id, options_for_select(@employees.map { |employee| [employee.name, employee.id] }), class: "pulldown-lg" %>
   </p>
-  <%= submit_tag "出勤", class: "btn-in-lg" %>
-  <%= submit_tag "退勤", class: "btn-out-lg" %>
+  <%= submit_tag "出勤", class: "btn-in-lg", disabled: @employees.empty? %>
+  <%= submit_tag "退勤", class: "btn-out-lg", disabled: @employees.empty? || @disabled.map{|e| puts '++++++++++++++++++++++++++++++++++++++++++'; puts :employee_id; false}[0] || @disabled[:employee_id] %>
 <% end %>
   </div>
   </p>

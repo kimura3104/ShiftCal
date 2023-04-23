@@ -8,11 +8,12 @@ class PagesController < CalendarsController
   def basic
     authenticate_or_request_with_http_basic do |name, password|
       name == ENV['BASIC_AUTH_NAME'] && password == ENV['BASIC_AUTH_PASSWORD']
-      #name == current_user.email && password == current_user.password
+      #name == current_user.email# && password == current_user.password
     end
   end
 
   def dashboard
+    create_calendar
   end
 
   def admin
@@ -24,6 +25,15 @@ class PagesController < CalendarsController
 
     #render controller: 'calendars', action: 'list_events'
     @events_list = list_events
+
+    today = Time.zone.now.to_date
+    @disabled = {}
+    @employees.each do |employee|
+      @disabled[employee.id] = true
+      event = @events_list.items.select{|e| e.summary == employee.name && e.start.date_time != nil}.find{|e| e.start.date_time.to_date == today}
+      @disabled[employee.id] = false if event!=nil && event.start.date_time < Time.zone.now
+    end
+    puts @disabled
     #logger.debug(@events_list)
     #logger.debug(@events_list.items.map{|e| e.summary})
     #logger.debug(@events_list.items.map{|e| (e.end.date_time - e.start.date_time).to_f * 24})
@@ -42,22 +52,23 @@ class PagesController < CalendarsController
     @events_list = list_events(selected_date.beginning_of_month.rfc3339, selected_date.end_of_month.rfc3339)
 
     return nil if @events_list == nil
-    @events_list = @events_list.items
-    if params[:employee_id] != nil
+    @events_list = @events_list.items.select {|e| e.start.date_time != nil}
+    if params[:employee_id] != nil && params[:employee_id] != ""
+      @employee = Employee.find(params[:employee_id])
       employee_name = Employee.find(params[:employee_id]).name
       @events_list = @events_list.select {|e| e.summary == employee_name}
     end
 
     @attendance_counts = {}
-    @attendance_hours = {}
+    @attendance_minutes = {}
     @attendance_wage = {}
     
     @employees.each do |employee|
       extracted_events = @events_list.select {|e| e.summary == employee.name}
       @attendance_counts[employee.id] = extracted_events.length
-      @attendance_hours[employee.id] = extracted_events
-      .map{|e| (e.end.date_time - e.start.date_time).to_f * 24}.sum
-      @attendance_wage[employee.id] = (@attendance_hours[employee.id] * employee.wage).to_i
+      @attendance_minutes[employee.id] = extracted_events
+      .map{|e| (e.end.date_time - e.start.date_time).to_f * 24 * 60}.sum
+      @attendance_wage[employee.id] = (@attendance_minutes[employee.id]/60 * employee.wage).to_i
     end
 
     @attendance_list = []
@@ -65,7 +76,9 @@ class PagesController < CalendarsController
       event_record = {
         "date" => event.start.date_time.to_date,
         "enployee" => event.summary,
-        "hours" => (event.end.date_time - event.start.date_time).to_f * 24
+        "start" => event.start.date_time,
+        "end" => event.end.date_time,
+        "minutes" => (event.end.date_time - event.start.date_time).to_f * 24 * 60
         #"wage" => (event.end.date_time - event.start.date_time).to_f * 24
       }
       @attendance_list << event_record

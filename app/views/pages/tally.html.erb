@@ -10,6 +10,7 @@
     start_year: (Time.now.year - 1),
     end_year: (Time.now.year + 1),
     default: DateTime.new(@year.to_i, @month.to_i, 1) || Time.now,
+    use_month_numbers: true,
     discard_day: true,
     date_separator:'%s'
     ),"年") + "月"
@@ -18,7 +19,7 @@
 <% end %>
 <label>従業員を選択</label>
 <%= form_tag(admin_tally_path, method: :get) do %>
-  <%= select_tag(:employee_id, options_from_collection_for_select(Employee.all, :id, :name), include_blank: true) %>
+  <%= select_tag(:employee_id, options_from_collection_for_select(Employee.all, :id, :name, params[:employee_id]), include_blank: true) %>
   <%= submit_tag("絞り込み") %>
 <% end %>
 
@@ -27,7 +28,7 @@
     <tr>
       <th>従業員名</th>
       <th>出勤日数</th>
-      <th>勤務時間（h）</th>
+      <th>勤務時間</th>
       <th>賃金（円）</th>
     </tr>
   </thead>
@@ -36,7 +37,7 @@
       <tr>
         <td><%= @employee.name %></td>
         <td><%= @attendance_counts[@employee.id] || 0 %></td>
-        <td><%= @attendance_hours[@employee.id] || 0 %></td>
+        <td><%= "#{@attendance_minutes[@employee.id].to_i/60}時間#{@attendance_minutes[@employee.id].to_i%60}分" || 0 %></td>
         <td><%= @attendance_wage[@employee.id] || 0 %></td>
       </tr>
     <% else %>
@@ -44,7 +45,7 @@
         <tr>
           <td><%= employee.name %></td>
           <td><%= @attendance_counts[employee.id] || 0 %></td>
-          <td><%= @attendance_hours[employee.id] || 0 %></td>
+          <td><%= "#{@attendance_minutes[employee.id].to_i/60}時間#{@attendance_minutes[employee.id].to_i%60}分" || 0 %></td>
           <td><%= @attendance_wage[employee.id] || 0 %></td>
         </tr>
       <% end %>
@@ -57,7 +58,9 @@
     <tr>
       <th>日付</th>
       <th>従業員名</th>
-      <th>勤務時間（h）</th>
+      <th>出勤時刻</th>
+      <th>退勤時刻</th>
+      <th>勤務時間</th>
     </tr>
   </thead>
   <tbody>
@@ -65,7 +68,9 @@
       <tr>
         <td><%= record["date"] %></td>
         <td><%= record["enployee"] || 0 %></td>
-        <td><%= record["hours"] || 0 %></td>
+        <td><%= record["start"].strftime('%H:%M') || 0 %></td>
+        <td><%= record["end"].strftime('%H:%M') || 0 %></td>
+        <td><%= "#{record["minutes"].to_i/60}時間#{record["minutes"].to_i%60}分" || 0 %></td>
       </tr>
     <% end %>
   </tbody>
